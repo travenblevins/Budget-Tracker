@@ -6,10 +6,13 @@ import { FaHome, FaUser, FaTrash } from 'react-icons/fa';
 import Balance from './components/balance';
 import Income from './components/income';
 import Expense from './components/expense';
+import TransactionsPage from './components/Transaction';
+
+
 
 export default function Home() {
   return (
-    <div className="h-screen w-full bg-slate-400 text-black flex flex-col justify-start items-center">
+    <div className="h-screen w-full bg-slate-300 text-black flex flex-col justify-start items-center">
       <div className="flex flex-col item-center">
         <h1 className="mt-10">Expense Tracker</h1>
         YOUR BALANCE:
@@ -19,46 +22,14 @@ export default function Home() {
           <Expense />
         </div>
         <div>
-          <h2>History</h2>
-          <div className="flex">
-            <div className="bg-white flex justify-between w-full">
-              <div>Flower</div>
-              <div className="flex">
-                <div>$20</div>
-                <div className="w-1 h-full bg-rose-400"></div>
-              </div>
-            </div>
-            <button>
-              <FaTrash />
-            </button>
-          </div>
-          <hr></hr>
-          <div className="flex">
-            <div className="bg-white flex justify-between w-full">
-              <div>Flower</div>
-              <div className="flex">
-                <div>$20</div>
-                <div className="w-1 h-full bg-rose-400"></div>
-              </div>
-            </div>
-            <button>
-              <FaTrash />
-            </button>
-          </div>
-          <hr></hr>
-          <div className="flex">
-            <div className="bg-white flex justify-between w-full">
-              <div>Flower</div>
-              <div className="flex">
-                <div>$20</div>
-                <div className="w-1 h-full bg-rose-400"></div>
-              </div>
-            </div>
-            <button>
-              <FaTrash />
-            </button>
-          </div>
-          <hr></hr>
+          <TransactionsPage />
+        </div>
+        <div className="flex flex-col">
+          <h1>Add a new transaction</h1>
+          <input type="text" placeholder="Enter text" />
+          <h1>Amount</h1>
+          <input type="text" placeholder="Enter amount" />
+          <button className="bg-cyan-400">Add transaction</button>
         </div>
       </div>
     </div>

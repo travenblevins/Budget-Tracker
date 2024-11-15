@@ -1,6 +1,6 @@
 import { FaTrash } from 'react-icons/fa';
 
-export default function positiveTransaction({ name, amount, id, onDelete }) {
+export default function PositiveTransaction({ name, amount, id, onDelete }) {
     return (
         <div className="flex" id={id}>
             <div className="bg-white flex justify-between w-full">

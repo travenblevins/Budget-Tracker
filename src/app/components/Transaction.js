@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext } from 'react'; // Import useContext
 import PositiveTransaction from './PositiveTransaction';
 import NegativeTransaction from './NegativeTransaction';
+import { useSessionData } from './sessionData';
 
 // Create the context inside the same file
 export const TransactionsContext = createContext(); // Export the context
@@ -29,7 +30,7 @@ export default function TransactionsPage() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       {transactions.map((transaction) =>
         transaction.type === 'positive' ? (
           <PositiveTransaction
@@ -49,6 +50,7 @@ export default function TransactionsPage() {
           />
         )
       )}
+      <h3>Transactions...</h3>
     </div>
   );
 }

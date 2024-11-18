@@ -3,7 +3,7 @@ import { FaTrash } from 'react-icons/fa';
 export default function NegativeTransaction({ name, amount, id, onDelete }) {
     return (
         <div className="flex" id={id}>
-            <div className="bg-white flex justify-between w-full">
+            <div className="bg-slate-300 flex justify-between w-full">
                 <div>{name}</div>
                 <div className="flex">
                     <div>${amount}</div>

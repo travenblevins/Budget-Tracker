@@ -8,6 +8,23 @@ import Expense from './components/expense';
 import { TransactionsProvider } from './components/Transaction'; // Use only TransactionsProvider here
 import { useContext } from 'react';
 import { TransactionsContext } from './components/Transaction';
+import { useSessionData } from './components/sessionData';
+
+function MyComponent() {
+  const [data, setData] = useSessionData('myKey', 'default value');
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={data}
+        onChange={(e) => setData(e.target.value)}
+      />
+      <p>Stored Data: {data}</p>
+    </div>
+  );
+}
+
 
 // Home component
 export default function Home() {
@@ -54,24 +71,28 @@ const HomeContent = ({ textInput, amountInput }) => {
   };
 
   return (
-    <div className="h-screen w-full bg-slate-300 text-black flex flex-col justify-start items-center">
-      <div className="flex flex-col item-center">
+    <div className="h-screen w-full bg-slate-300 text-black flex flex-col items-center">
+      <div className="flex flex-col h-screen">
         <h1 className="mt-10">Expense Tracker</h1>
         YOUR BALANCE:
         <Balance />
-        <div className="bg-white flex gap-4">
-          <Income />
-          <Expense />
-        </div>
-        <div>
-          <TransactionsPage /> {/* Now wrapped with the provider */}
+        <div className="bg-white flex flex-col gap-4 h-2/5">
+          <div className="flex justify-center">
+            <Income />
+            <Expense />
+          </div>
+          <div>
+            <h2>History</h2>
+            <hr></hr>
+          </div>
+          <TransactionsPage />
         </div>
         <div className="flex flex-col">
-          <h1>Add a new transaction</h1>
+          <h1>Add a new transaction (input '-' if it is an expense)</h1>
           <input type="text" placeholder="Enter text" ref={textInput} />
           <h1>Amount</h1>
           <input type="number" placeholder="Enter amount" ref={amountInput} />
-          <button onClick={handleAddTransaction} className="bg-cyan-400">
+          <button onClick={handleAddTransaction} className="bg-cyan-400 rounded-lg">
             Add transaction
           </button>
         </div>

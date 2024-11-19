@@ -1,102 +1,96 @@
-"use client";
+'use client';  // Ensure client-side rendering
 
-import React, { useRef } from 'react';
-import TransactionsPage from './components/Transaction'; // Correct import of TransactionsPage
-import Balance from './components/balance';
-import Income from './components/income';
-import Expense from './components/expense';
-import { TransactionsProvider } from './components/Transaction'; // Use only TransactionsProvider here
-import { useContext } from 'react';
-import { TransactionsContext } from './components/Transaction';
-import { useSessionData } from './components/sessionData';
+import React, { useState, useEffect } from "react";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { initializeFirebase } from "./services/firebase";
+import { useRouter } from "next/navigation"; // Correct usage of useRouter
 
-function MyComponent() {
-  const [data, setData] = useSessionData('myKey', 'default value');
+// Ensure Firebase is initialized
+initializeFirebase();
 
-  return (
-    <div>
-      <input
-        type="text"
-        value={data}
-        onChange={(e) => setData(e.target.value)}
-      />
-      <p>Stored Data: {data}</p>
-    </div>
-  );
-}
+const Page = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSignIn, setIsSignIn] = useState(true); // Toggle between sign-in and sign-up
+  const [message, setMessage] = useState("");
+  const [isClient, setIsClient] = useState(false); // Client-side flag
 
+  const auth = getAuth();
+  const router = useRouter(); // Initialize useRouter for navigation
 
-// Home component
-export default function Home() {
-  const textInput = useRef(null);
-  const amountInput = useRef(null);
+  useEffect(() => {
+    setIsClient(true); // Set flag to true when on the client side
+  }, []);
 
-  return (
-    <TransactionsProvider> {/* Wrapping the entire UI to provide the context */}
-      <HomeContent textInput={textInput} amountInput={amountInput} />
-    </TransactionsProvider>
-  );
-}
-
-// HomeContent handles the UI and accesses context
-const HomeContent = ({ textInput, amountInput }) => {
-  const { setTransactions } = useContext(TransactionsContext);
-
-  // Function to handle adding a new transaction
-  const handleAddTransaction = () => {
-    const name = textInput.current.value;
-    const amount = parseFloat(amountInput.current.value);
-
-    if (!name || isNaN(amount)) {
-      alert("Please enter valid values for both fields.");
-      return;
+  // Handle sign-up
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      setMessage(`Welcome, ${userCredential.user.email}! Your account has been created.`);
+      router.push("/budget"); // Redirect to the budget page (app directory route)
+    } catch (error) {
+      setMessage(`Error: ${error.message}`);
     }
-
-    const newTransaction = {
-      id: Date.now(),
-      name,
-      amount,
-      type: amount > 0 ? 'positive' : 'negative',
-    };
-
-    // Update transactions state
-    setTransactions((prevTransactions) => [
-      ...prevTransactions,
-      newTransaction,
-    ]);
-
-    // Clear input fields after adding the transaction
-    textInput.current.value = '';
-    amountInput.current.value = '';
   };
 
+  // Handle sign-in
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setMessage(`Welcome back, ${userCredential.user.email}! You are signed in.`);
+      router.push("/budget"); // Redirect to the budget page (app directory route)
+    } catch (error) {
+      setMessage(`Error: ${error.message}`);
+    }
+  };
+
+  // Don't render until the component is mounted on the client side
+  if (!isClient) {
+    return null; // Optionally show a loading spinner or nothing
+  }
+
   return (
-    <div className="h-screen w-full bg-slate-300 text-black flex flex-col items-center">
-      <div className="flex flex-col h-screen">
-        <h1 className="mt-10">Expense Tracker</h1>
-        YOUR BALANCE:
-        <Balance />
-        <div className="bg-white flex flex-col gap-4 h-2/5">
-          <div className="flex justify-center">
-            <Income />
-            <Expense />
-          </div>
-          <div>
-            <h2>History</h2>
-            <hr></hr>
-          </div>
-          <TransactionsPage />
+    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
+      <h2>{isSignIn ? "Sign In" : "Sign Up"}</h2>
+      <form onSubmit={isSignIn ? handleSignIn : handleSignUp}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            className="text-black"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={{ width: "100%", padding: "8px", margin: "8px 0" }}
+          />
         </div>
-        <div className="flex flex-col">
-          <h1>Add a new transaction (input '-' if it is an expense)</h1>
-          <input type="text" placeholder="Enter text" ref={textInput} />
-          <h1>Amount</h1>
-          <input type="number" placeholder="Enter amount" ref={amountInput} />
-          <button onClick={handleAddTransaction} className="bg-cyan-400 rounded-lg">
-            Add transaction
-          </button>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            className="text-black"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{ width: "100%", padding: "8px", margin: "8px 0" }}
+          />
         </div>
-      </div>
+        <button type="submit" style={{ width: "100%", padding: "10px", margin: "8px 0" }}>
+          {isSignIn ? "Sign In" : "Sign Up"}
+        </button>
+      </form>
+      <button
+        onClick={() => setIsSignIn(!isSignIn)}
+        className="text-black"
+        style={{ width: "100%", padding: "10px", margin: "8px 0", backgroundColor: "#f0f0f0" }}
+      >
+        {isSignIn ? "Need an account? Sign Up" : "Already have an account? Sign In"}
+      </button>
+      {message && <p>{message}</p>}
     </div>
   );
 };
+
+export default Page;

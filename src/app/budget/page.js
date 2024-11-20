@@ -1,7 +1,7 @@
-"use client"; // Ensure this is at the top to mark the file as client-side rendered
+"use client"; // Ensure this file is rendered client-side
 
 import React, { useRef, useEffect, useState, useContext } from "react";
-import TransactionsPage from "../components/Transaction"; // Correct import of TransactionsPage
+import TransactionsPage from "../components/Transaction";
 import Balance from "../components/balance";
 import Income from "../components/income";
 import Expense from "../components/expense";
@@ -10,10 +10,7 @@ import { TransactionsContext } from "../components/Transaction";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { initializeFirebase } from "../services/firebase";
-
-// Dynamically import useRouter to ensure it's only used on the client
-import dynamic from "next/dynamic";
-const DynamicRouter = dynamic(() => import("next/router").then(mod => mod.useRouter), { ssr: false });
+import { useRouter } from "next/navigation";
 
 // Initialize Firebase
 initializeFirebase();
@@ -24,32 +21,23 @@ export default function Home() {
   const amountInput = useRef(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isClient, setIsClient] = useState(false);
-
-  // Dynamically get the router on client-side only
-  const router = DynamicRouter(); // Now the router will only be available on the client
+  const router = useRouter();
 
   useEffect(() => {
-    setIsClient(true); // Set to true once the component is mounted on the client side
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return; // Only run on client side
-
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
         setLoading(false);
       } else {
-        router.push("/"); // Redirect unauthenticated users to login page
+        router.push("/"); // Redirect unauthenticated users to login
       }
     });
 
     return () => unsubscribe();
-  }, [router, isClient]); // Depend on router and isClient to ensure it's client-side
+  }, [router]);
 
-  if (loading || !isClient) return <div>Loading...</div>; // Add fallback loading until the client-side is ready
+  if (loading) return <div>Loading...</div>;
 
   return (
     <TransactionsProvider>
@@ -57,12 +45,13 @@ export default function Home() {
         textInput={textInput}
         amountInput={amountInput}
         user={user}
+        router={router}
       />
     </TransactionsProvider>
   );
 }
 
-const HomeContent = ({ textInput, amountInput, user }) => {
+const HomeContent = ({ textInput, amountInput, user, router }) => {
   const { transactions, setTransactions } = useContext(TransactionsContext);
 
   useEffect(() => {
@@ -72,8 +61,10 @@ const HomeContent = ({ textInput, amountInput, user }) => {
 
       if (docSnap.exists()) {
         setTransactions(docSnap.data().transactions || []);
+        console.log('Transactions fetched')
       } else {
         await setDoc(docRef, { transactions: [] });
+        console.log('Transaction fetch failed') 
       }
     };
 
@@ -108,19 +99,25 @@ const HomeContent = ({ textInput, amountInput, user }) => {
     amountInput.current.value = "";
   };
 
+  const handleLogout = () => {
+    const auth = getAuth();
+    auth.signOut();
+    router.push("/");
+  };
+
   return (
     <div className="h-screen w-full bg-slate-300 text-black flex flex-col items-center">
       <div className="flex flex-col h-screen">
         <h1 className="mt-10">Expense Tracker</h1>
         <Balance />
-        <div className="bg-white flex flex-col gap-4 h-2/5">
+        <div className="bg-white flex flex-col gap-4">
           <div className="flex justify-center">
             <Income />
             <Expense />
           </div>
           <div>
             <h2>History</h2>
-            <hr></hr>
+            <hr />
           </div>
           <TransactionsPage />
         </div>
@@ -134,6 +131,12 @@ const HomeContent = ({ textInput, amountInput, user }) => {
             className="bg-cyan-400 rounded-lg"
           >
             Add transaction
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-400 rounded-lg"
+          >
+            Logout
           </button>
         </div>
       </div>

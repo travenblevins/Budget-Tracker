@@ -53,6 +53,7 @@ const Page = () => {
 
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
+      <h1>Welcome to Budget Tracker</h1>
       <h2>{isSignIn ? "Sign In" : "Sign Up"}</h2>
       <form onSubmit={isSignIn ? handleSignIn : handleSignUp}>
         <div>
@@ -77,7 +78,7 @@ const Page = () => {
             style={{ width: "100%", padding: "8px", margin: "8px 0" }}
           />
         </div>
-        <button type="submit" style={{ width: "100%", padding: "10px", margin: "8px 0" }}>
+        <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor:"#2d24db", margin: "8px 0" }}>
           {isSignIn ? "Sign In" : "Sign Up"}
         </button>
       </form>

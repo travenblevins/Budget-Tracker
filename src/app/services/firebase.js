@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
@@ -13,29 +14,37 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
-// Initialize Firebase only in the browser (client-side)
-export const initializeFirebase = () => {
-  if (typeof window === "undefined") {
-    console.error("Firebase should be initialized on the client-side.");
-    return;
+let firebaseApp;
+
+const initializeFirebase = () => {
+  if (typeof window !== "undefined" && !firebaseApp) {
+    // Initialize Firebase only in the client-side environment
+    firebaseApp = initializeApp(firebaseConfig);
+    console.log('Firebase App Initialized:', firebaseApp);
+
+    // Initialize Firebase Analytics (only client-side)
+    getAnalytics(firebaseApp);
+    console.log("Firebase Analytics Initialized:", firebaseApp);
+
+    // Optional: Initialize Firebase Auth if you need it
+    const auth = getAuth(firebaseApp);
+    console.log("Firebase Auth Initialized:", auth);
   }
 
-  if (!firebaseConfig.apiKey) {
-    console.error("Firebase API key is missing in the config.");
-    return;
-  }
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  console.log("Firebase App Initialized:", app);
-
-  // Initialize Firebase Analytics
-  const analytics = getAnalytics(app);
-  console.log("Firebase Analytics Initialized:", analytics);
-
-  // Initialize Firebase Auth if needed
-  const auth = getAuth(app);
-  console.log("Firebase Auth Initialized:", auth);
-
-  return app;
+  return firebaseApp;
 };
+
+export const useFirebase = () => {
+  const [firebaseInitialized, setFirebaseInitialized] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      initializeFirebase();
+      setFirebaseInitialized(true); // Set state when Firebase is initialized
+    }
+  }, []);
+
+  return firebaseInitialized;
+};
+
+export default initializeFirebase;

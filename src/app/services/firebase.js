@@ -1,3 +1,4 @@
+// src/services/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
@@ -12,25 +13,20 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
-// Variable to hold the Firebase app instance
 let firebaseApp;
 
-const initializeFirebase = () => {
-  if (typeof window !== "undefined" && !firebaseApp) {
-    // Initialize Firebase only in the client-side environment
+export const initializeFirebase = () => {
+  // Initialize Firebase only once
+  if (!firebaseApp) {
     firebaseApp = initializeApp(firebaseConfig);
-    console.log('Firebase App Initialized:', firebaseApp);
+    console.log("Firebase App Initialized");
 
-    // Initialize Firebase Analytics (only on client-side)
-    getAnalytics(firebaseApp);
-    console.log("Firebase Analytics Initialized:", firebaseApp);
-
-    // Initialize Firebase Auth if needed
-    getAuth(firebaseApp);
+    // Initialize Firebase services if needed
+    if (typeof window !== "undefined") {
+      getAnalytics(firebaseApp);
+      console.log("Firebase Analytics Initialized");
+    }
   }
 
   return firebaseApp;
 };
-
-// Named export for initializeFirebase
-export { initializeFirebase };

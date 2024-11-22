@@ -1,7 +1,5 @@
-
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -14,19 +12,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-export const initializeFirebase = () => {
-    if (!firebaseConfig.apiKey) {
-        console.error("Firebase API key is missing in the config.");
-        return;
-    }
+if (typeof window !== "undefined") {
+  try {
+    const analytics = getAnalytics(app);
+    console.log("Firebase Analytics Initialized:", analytics);
+  } catch (error) {
+    console.warn("Firebase Analytics Initialization Failed:", error);
+  }
+}
 
-    const app = initializeApp(firebaseConfig); 
-    console.log('Firebase App Initialized:', app);
-
-    if (typeof window !== "undefined") {
-        getAnalytics(app);  
-    }
-
-    return app;
-};
+export default app;

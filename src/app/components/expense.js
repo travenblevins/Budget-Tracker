@@ -13,7 +13,7 @@ export default function Expense() {
             }
         });
         setExpense(total.toFixed(2));
-    })
+    })[transactions];
 
     return (
         <div className="flex flex-col mt-5 mb-5 mr-10 ml-10 gap-2">

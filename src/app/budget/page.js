@@ -64,7 +64,7 @@ const HomeContent = ({ textInput, amountInput, user, router }) => {
         console.log('Transactions fetched')
       } else {
         await setDoc(docRef, { transactions: [] });
-        console.log('Transaction fetch failed') 
+        console.log('Transaction fetch failed')
       }
     };
 
@@ -122,7 +122,7 @@ const HomeContent = ({ textInput, amountInput, user, router }) => {
           <TransactionsPage />
         </div>
         <div className="flex flex-col">
-          <h1>Add a new transaction (input '-' if it is an expense)</h1>
+          <h1>Add a new transaction (input &#39;-&#39; if it is an expense)</h1>
           <input type="text" placeholder="Enter text" ref={textInput} />
           <h1>Amount</h1>
           <input type="number" placeholder="Enter amount" ref={amountInput} />

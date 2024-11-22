@@ -34,6 +34,10 @@ const initializeFirebase = () => {
   return firebaseApp;
 };
 
+// Named export for initializeFirebase
+export { initializeFirebase };
+
+// Optional: Default export for useFirebase if you need it
 export const useFirebase = () => {
   const [firebaseInitialized, setFirebaseInitialized] = useState(false);
 
@@ -46,5 +50,3 @@ export const useFirebase = () => {
 
   return firebaseInitialized;
 };
-
-export default initializeFirebase;

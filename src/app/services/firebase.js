@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
-// Firebase configuration from environment variables
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
@@ -14,6 +12,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
+// Variable to hold the Firebase app instance
 let firebaseApp;
 
 const initializeFirebase = () => {
@@ -22,13 +21,12 @@ const initializeFirebase = () => {
     firebaseApp = initializeApp(firebaseConfig);
     console.log('Firebase App Initialized:', firebaseApp);
 
-    // Initialize Firebase Analytics (only client-side)
+    // Initialize Firebase Analytics (only on client-side)
     getAnalytics(firebaseApp);
     console.log("Firebase Analytics Initialized:", firebaseApp);
 
-    // Optional: Initialize Firebase Auth if you need it
-    const auth = getAuth(firebaseApp);
-    console.log("Firebase Auth Initialized:", auth);
+    // Initialize Firebase Auth if needed
+    getAuth(firebaseApp);
   }
 
   return firebaseApp;
@@ -36,19 +34,3 @@ const initializeFirebase = () => {
 
 // Named export for initializeFirebase
 export { initializeFirebase };
-
-// Optional: Default export for useFirebase if you need it
-export const useFirebase = () => {
-  const [firebaseInitialized, setFirebaseInitialized] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      initializeFirebase();
-      setFirebaseInitialized(true); // Set state when Firebase is initialized
-    }
-  }, []);
-
-  return firebaseInitialized;
-};
-
-//update

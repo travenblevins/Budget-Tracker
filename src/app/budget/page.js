@@ -1,5 +1,8 @@
 "use client"; // Ensure this file is rendered client-side
 
+export const dynamic = "force-dynamic";
+
+
 import React, { useRef, useEffect, useState, useContext } from "react";
 import TransactionsPage from "../components/Transaction";
 import Balance from "../components/balance";

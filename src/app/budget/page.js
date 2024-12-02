@@ -113,16 +113,16 @@ const HomeContent = ({ textInput, amountInput, user, router }) => {
       <div className="flex flex-col h-screen">
         <h1 className="mt-10">Expense Tracker</h1>
         <Balance />
-        <div className="bg-white flex flex-col gap-4">
+        <div className="bg-white flex flex-col gap-4 p-1 border-2">
           <div className="flex justify-center">
             <Income />
             <Expense />
           </div>
-          <div>
+          <div className="border-gray-200 border-2">
             <h2>History</h2>
             <hr />
+            <TransactionsPage />
           </div>
-          <TransactionsPage />
         </div>
         <div className="flex flex-col">
           <h1>Add a new transaction (input &#39;-&#39; if it is an expense)</h1>

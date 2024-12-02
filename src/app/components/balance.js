@@ -15,7 +15,7 @@ export default function Balance() {
 
     let balanceColor = "text-gray-500"; // Default color for zero balance
     if (balance > 0) {
-        balanceColor = "text-green-500"; // Green for positive balance
+        balanceColor = "text-emerald-600"; // Green for positive balance
     } else if (balance < 0) {
         balanceColor = "text-red-500"; // Red for negative balance
     }

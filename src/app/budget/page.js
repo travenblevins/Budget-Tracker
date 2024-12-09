@@ -109,8 +109,8 @@ const HomeContent = ({ textInput, amountInput, user, router }) => {
   };
 
   return (
-    <div className="h-screen w-full bg-slate-300 text-black flex flex-col items-center">
-      <div className="flex flex-col h-screen w-2/5">
+    <div className="min-h-screen w-full bg-slate-300 text-black flex flex-col items-center">
+      <div className="flex flex-col w-2/5 mb-5">
         <h1 className="mt-10">Expense Tracker</h1>
         <Balance />
         <div className="bg-white flex flex-col gap-4 p-1 border-2">

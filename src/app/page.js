@@ -52,7 +52,7 @@ const Page = () => {
   }
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
+    <div className="max-w-[400px] mx-auto flex flex-col h-screen justify-start pt-10">
       <h1>Welcome to Budget Tracker</h1>
       <h2>{isSignIn ? "Sign In" : "Sign Up"}</h2>
       <form onSubmit={isSignIn ? handleSignIn : handleSignUp}>

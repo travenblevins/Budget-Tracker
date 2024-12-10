@@ -43,7 +43,7 @@ export default function Home() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <TransactionsProvider>
+    <TransactionsProvider user={user}>
       <HomeContent
         textInput={textInput}
         amountInput={amountInput}
@@ -101,6 +101,7 @@ const HomeContent = ({ textInput, amountInput, user, router }) => {
     textInput.current.value = "";
     amountInput.current.value = "";
   };
+
 
   const handleLogout = () => {
     const auth = getAuth();
